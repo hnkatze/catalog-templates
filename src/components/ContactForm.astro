@@ -1,0 +1,141 @@
+---
+// Componente de formulario con EmailJS
+---
+
+<form id="contact-form" class="space-y-4">
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+    <input 
+      type="text" 
+      name="user_name" 
+      required
+      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" 
+    />
+  </div>
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+    <input 
+      type="email" 
+      name="user_email" 
+      required
+      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" 
+    />
+  </div>
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Proyecto</label>
+    <select 
+      name="project_type" 
+      required
+      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+    >
+      <option value="">Seleccionar...</option>
+      <option>E-commerce</option>
+      <option>Hotel/Resort</option>
+      <option>Landing Page</option>
+      <option>Evento</option>
+      <option>QR Menú</option>
+      <option>Corporativo</option>
+      <option>Portfolio</option>
+      <option>Personalizado</option>
+    </select>
+  </div>
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Mensaje</label>
+    <textarea 
+      name="message" 
+      rows="4" 
+      required
+      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+    ></textarea>
+  </div>
+  <button 
+    type="submit" 
+    class="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    Enviar Mensaje
+  </button>
+  <div id="form-status" class="hidden text-center p-3 rounded-lg"></div>
+</form>
+
+<!-- EmailJS SDK -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+<script>
+  // CONFIGURACIÓN DE EMAILJS
+  // 1. Regístrate gratis en https://www.emailjs.com/
+  // 2. Crea un servicio de email (Gmail, Outlook, etc)
+  // 3. Crea una plantilla de email
+  // 4. Reemplaza estos valores con los tuyos:
+  
+  const EMAILJS_PUBLIC_KEY = 'TU_PUBLIC_KEY'; // Obtén en EmailJS Dashboard
+  const EMAILJS_SERVICE_ID = 'TU_SERVICE_ID'; // ID del servicio (ej: 'service_abc123')
+  const EMAILJS_TEMPLATE_ID = 'TU_TEMPLATE_ID'; // ID de la plantilla (ej: 'template_xyz789')
+  
+  // Inicializar EmailJS
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+  
+  // Manejar envío del formulario
+  const form = document.getElementById('contact-form');
+  const statusDiv = document.getElementById('form-status');
+  
+  form?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Deshabilitar botón mientras envía
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando...';
+    
+    // Enviar email
+    emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, form)
+      .then(function() {
+        // Éxito
+        statusDiv.className = 'text-green-600 bg-green-50 p-3 rounded-lg text-center';
+        statusDiv.textContent = '✅ Mensaje enviado con éxito! Te contactaré pronto.';
+        statusDiv.classList.remove('hidden');
+        form.reset();
+      })
+      .catch(function(error) {
+        // Error
+        statusDiv.className = 'text-red-600 bg-red-50 p-3 rounded-lg text-center';
+        statusDiv.textContent = '❌ Error al enviar. Por favor intenta de nuevo.';
+        statusDiv.classList.remove('hidden');
+        console.error('Error:', error);
+      })
+      .finally(function() {
+        // Restaurar botón
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Enviar Mensaje';
+        
+        // Ocultar mensaje después de 5 segundos
+        setTimeout(() => {
+          statusDiv.classList.add('hidden');
+        }, 5000);
+      });
+  });
+</script>
+
+<!-- 
+INSTRUCCIONES PARA CONFIGURAR EMAILJS:
+
+1. Ve a https://www.emailjs.com/ y crea una cuenta gratis
+2. En el Dashboard, ve a "Email Services" y agrega tu servicio de email (Gmail, Outlook, etc)
+3. Ve a "Email Templates" y crea una plantilla con estas variables:
+   - {{user_name}} - Nombre del remitente
+   - {{user_email}} - Email del remitente
+   - {{project_type}} - Tipo de proyecto
+   - {{message}} - Mensaje
+4. Ve a "Integration" y copia tu Public Key
+5. Reemplaza los valores en el script arriba con tus IDs
+
+PLANTILLA DE EMAIL SUGERIDA:
+Asunto: Nuevo contacto desde el catálogo - {{project_type}}
+
+Mensaje de:
+Nombre: {{user_name}}
+Email: {{user_email}}
+Tipo de Proyecto: {{project_type}}
+
+Mensaje:
+{{message}}
+-->
