@@ -44,11 +44,11 @@ import { templates } from '../data/templates';
     <section class="relative overflow-hidden">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div class="text-center">
-          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 scroll-hero-title">
             Templates Profesionales para tu
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600"> Negocio Digital</span>
           </h2>
-          <p class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+          <p class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto mb-8 scroll-hero-subtitle">
             Diseños modernos y funcionales para e-commerce, hoteles, restaurantes, eventos y más. 
             Todos personalizables y listos para impulsar tu presencia online.
           </p>
@@ -64,24 +64,26 @@ import { templates } from '../data/templates';
       </div>
       
       <!-- Decorative elements -->
-      <div class="absolute top-20 right-10 w-48 sm:w-72 h-48 sm:h-72 bg-blue-200 rounded-full opacity-20 blur-3xl"></div>
-      <div class="absolute bottom-0 left-10 w-64 sm:w-96 h-64 sm:h-96 bg-purple-200 rounded-full opacity-20 blur-3xl"></div>
+      <div class="absolute top-20 right-10 w-48 sm:w-72 h-48 sm:h-72 bg-blue-200 rounded-full opacity-20 blur-3xl float-element parallax-element" data-speed="0.3"></div>
+      <div class="absolute bottom-0 left-10 w-64 sm:w-96 h-64 sm:h-96 bg-purple-200 rounded-full opacity-20 blur-3xl float-element-slow parallax-element" data-speed="0.5"></div>
     </section>
 
     <!-- Stats Section -->
-    <section class="py-12 bg-white">
+    <section class="py-12 bg-white scroll-section-fade">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div class="text-center">
-            <div class="text-3xl font-bold text-blue-600 mb-2">50+</div>
+          <div class="text-center scroll-counter">
+            <div class="text-3xl font-bold text-blue-600 mb-2" data-target="50">50+</div>
             <div class="text-gray-600">Templates Creados</div>
           </div>
-          <div class="text-center">
-            <div class="text-3xl font-bold text-yellow-500 mb-2">★★★★★</div>
+          <div class="text-center scroll-scale">
+            <div class="text-3xl font-bold text-yellow-500 mb-2 star-rating">
+              <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+            </div>
             <div class="text-gray-600">Clientes Satisfechos</div>
           </div>
-          <div class="text-center">
-            <div class="text-3xl font-bold text-blue-600 mb-2">4+</div>
+          <div class="text-center scroll-counter">
+            <div class="text-3xl font-bold text-blue-600 mb-2" data-target="4">4+</div>
             <div class="text-gray-600">Años de Experiencia</div>
           </div>
           <div class="text-center">
@@ -93,16 +95,16 @@ import { templates } from '../data/templates';
     </section>
 
     <!-- Templates Section -->
-    <section id="templates" class="py-12">
+    <section id="templates" class="py-12 scroll-fade-in">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h3 class="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-8 sm:mb-12">
+        <h3 class="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-8 sm:mb-12 scroll-reveal-text">
           Mis Proyectos Realizados
         </h3>
 
         <!-- Templates Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="templates-grid">
           {templates.map((template) => (
-            <div class="template-item">
+            <div class="template-item scroll-card hover-lift">
               <TemplateCard template={template} />
             </div>
           ))}
@@ -330,19 +332,3 @@ import { templates } from '../data/templates';
 </script>
 
 
-<style>
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  .template-item {
-    animation: fadeIn 0.5s;
-  }
-</style>

@@ -1,0 +1,331 @@
+/* ========================================
+   SCROLL-DRIVEN ANIMATIONS
+   Usando animation-timeline: view()
+   ======================================== */
+
+/* ========================================
+   1. ANIMACIONES BASE (KEYFRAMES)
+   ======================================== */
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes slide-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scale-up {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes rotate-in {
+  from {
+    opacity: 0;
+    transform: rotate(-10deg) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+}
+
+@keyframes reveal-text {
+  from {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+}
+
+@keyframes counter-scale {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+/* ========================================
+   2. CLASES CON SCROLL-DRIVEN ANIMATIONS
+   ======================================== */
+
+/* Soporte para navegadores modernos con animation-timeline */
+@supports (animation-timeline: view()) {
+  
+  /* Fade in básico cuando entra en viewport */
+  .scroll-fade-in {
+    animation: fade-in linear both;
+    animation-timeline: view();
+    animation-range: entry 25% cover 50%;
+  }
+
+  /* Slide desde abajo */
+  .scroll-slide-up {
+    animation: slide-in-up linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 30%;
+  }
+
+  /* Slide desde la izquierda */
+  .scroll-slide-left {
+    animation: slide-in-left linear both;
+    animation-timeline: view(block);
+    animation-range: entry 10% cover 40%;
+  }
+
+  /* Slide desde la derecha */
+  .scroll-slide-right {
+    animation: slide-in-right linear both;
+    animation-timeline: view(block);
+    animation-range: entry 10% cover 40%;
+  }
+
+  /* Scale up con fade */
+  .scroll-scale {
+    animation: scale-up linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 35%;
+  }
+
+  /* Rotación suave */
+  .scroll-rotate {
+    animation: rotate-in linear both;
+    animation-timeline: view();
+    animation-range: entry 15% cover 50%;
+  }
+
+  /* Reveal de texto */
+  .scroll-reveal-text {
+    animation: reveal-text linear both;
+    animation-timeline: view();
+    animation-range: entry 20% cover 60%;
+  }
+
+  /* Para los contadores/estadísticas */
+  .scroll-counter {
+    animation: counter-scale linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 50%;
+  }
+
+  /* Hero section con animación compleja */
+  .scroll-hero-title {
+    animation: slide-in-up linear both;
+    animation-timeline: view(block 20% 20%);
+    animation-range: entry 0% cover 40%;
+  }
+
+  .scroll-hero-subtitle {
+    animation: fade-in linear both;
+    animation-timeline: view(block 10% 10%);
+    animation-range: entry 25% cover 60%;
+  }
+
+  /* Cards del catálogo con stagger effect */
+  .scroll-card {
+    animation: scale-up linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 40%;
+  }
+
+  .scroll-card:nth-child(1) { animation-range: entry 0% cover 35%; }
+  .scroll-card:nth-child(2) { animation-range: entry 5% cover 40%; }
+  .scroll-card:nth-child(3) { animation-range: entry 10% cover 45%; }
+  .scroll-card:nth-child(4) { animation-range: entry 0% cover 35%; }
+  .scroll-card:nth-child(5) { animation-range: entry 5% cover 40%; }
+  .scroll-card:nth-child(6) { animation-range: entry 10% cover 45%; }
+
+  /* Secciones completas */
+  .scroll-section-fade {
+    animation: fade-in linear both;
+    animation-timeline: view(block 10% 10%);
+    animation-range: entry 0% cover 30%;
+  }
+}
+
+/* ========================================
+   3. FALLBACK PARA NAVEGADORES SIN SOPORTE
+   ======================================== */
+
+@supports not (animation-timeline: view()) {
+  /* Intersection Observer fallback classes */
+  .scroll-fade-in,
+  .scroll-slide-up,
+  .scroll-slide-left,
+  .scroll-slide-right,
+  .scroll-scale,
+  .scroll-rotate,
+  .scroll-reveal-text,
+  .scroll-counter,
+  .scroll-hero-title,
+  .scroll-hero-subtitle,
+  .scroll-card,
+  .scroll-section-fade {
+    opacity: 0;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .scroll-slide-up { transform: translateY(50px); }
+  .scroll-slide-left { transform: translateX(-50px); }
+  .scroll-slide-right { transform: translateX(50px); }
+  .scroll-scale { transform: scale(0.9); }
+  .scroll-rotate { transform: rotate(-5deg) scale(0.95); }
+
+  /* Clase aplicada por Intersection Observer */
+  .in-view {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ========================================
+   4. ANIMACIONES DECORATIVAS
+   ======================================== */
+
+/* Floating elements */
+.float-element {
+  animation: float 6s ease-in-out infinite;
+}
+
+.float-element-slow {
+  animation: float 8s ease-in-out infinite;
+}
+
+.float-element-delayed {
+  animation: float 6s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+/* Pulse para elementos importantes */
+.pulse-element {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Estrellas animadas */
+.star-rating {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.star-rating .star {
+  display: inline-block;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.star-rating .star:nth-child(1) { animation-delay: 0s; }
+.star-rating .star:nth-child(2) { animation-delay: 0.2s; }
+.star-rating .star:nth-child(3) { animation-delay: 0.4s; }
+.star-rating .star:nth-child(4) { animation-delay: 0.6s; }
+.star-rating .star:nth-child(5) { animation-delay: 0.8s; }
+
+/* ========================================
+   5. EFECTOS HOVER MEJORADOS
+   ======================================== */
+
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.hover-scale {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+/* ========================================
+   6. UTILIDADES
+   ======================================== */
+
+/* Para retrasar animaciones */
+.animation-delay-100 { animation-delay: 100ms; }
+.animation-delay-200 { animation-delay: 200ms; }
+.animation-delay-300 { animation-delay: 300ms; }
+.animation-delay-400 { animation-delay: 400ms; }
+.animation-delay-500 { animation-delay: 500ms; }
+
+/* Para diferentes duraciones */
+.animation-fast { animation-duration: 0.5s; }
+.animation-normal { animation-duration: 1s; }
+.animation-slow { animation-duration: 1.5s; }
+.animation-slower { animation-duration: 2s; }
