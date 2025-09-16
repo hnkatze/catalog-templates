@@ -34,14 +34,50 @@ const { template } = Astro.props;
     <section class="py-12">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-          <!-- Left Column - Image -->
+          <!-- Left Column - Images -->
           <div class="space-y-6">
-            <div class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl overflow-hidden shadow-xl">
-              {template.thumbnail ? (
+            <!-- Main Image Display -->
+            <div class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl overflow-hidden shadow-xl relative">
+              {template.images && template.images.length > 0 ? (
+                <div class="relative w-full h-full">
+                  <img 
+                    id="main-image"
+                    src={template.images[0]} 
+                    alt={`${template.title} - Imagen principal`}
+                    class="w-full h-full object-cover cursor-pointer transition-opacity duration-300"
+                  />
+                  {template.images.length > 1 && (
+                    <div class="absolute inset-0 flex items-center justify-between p-4 opacity-0 hover:opacity-100 transition-opacity duration-300">
+                      <button 
+                        data-nav="prev"
+                        class="bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
+                        aria-label="Imagen anterior"
+                      >
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                      </button>
+                      <button 
+                        data-nav="next"
+                        class="bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
+                        aria-label="Siguiente imagen"
+                      >
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                      </button>
+                    </div>
+                  )}
+                  <div class="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                    <span id="image-counter">1</span> / {template.images.length}
+                  </div>
+                </div>
+              ) : template.thumbnail ? (
                 <img 
+                  id="main-image"
                   src={template.thumbnail} 
                   alt={template.title}
-                  class="w-full h-full object-cover"
+                  class="w-full h-full object-cover cursor-pointer transition-opacity duration-300"
                 />
               ) : (
                 <div class="w-full h-full flex items-center justify-center">
@@ -49,6 +85,24 @@ const { template } = Astro.props;
                 </div>
               )}
             </div>
+
+            <!-- Thumbnails Grid (solo si hay múltiples imágenes) -->
+            {template.images && template.images.length > 1 && (
+              <div class="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                {template.images.map((image, index) => (
+                  <div 
+                    class={`aspect-square bg-gray-100 rounded-lg overflow-hidden cursor-pointer border-2 transition-all duration-200 ${index === 0 ? 'border-blue-500 scale-105' : 'border-transparent hover:border-gray-300 hover:scale-105'}`}
+                    data-thumbnail-index={index}
+                  >
+                    <img 
+                      src={image} 
+                      alt={`${template.title} - Imagen ${index + 1}`}
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
             
             <!-- Action Buttons -->
             <div class="flex gap-4">
@@ -138,5 +192,485 @@ const { template } = Astro.props;
         </div>
       </div>
     </section>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="fixed inset-0 bg-black/90 z-50 hidden items-center justify-center p-4">
+      <div class="relative max-w-7xl w-full h-full flex items-center justify-center">
+        <!-- Close button -->
+        <button 
+          data-lightbox="close"
+          class="absolute top-4 right-4 text-white hover:text-gray-300 z-10 bg-black/30 rounded-full p-2 transition-colors"
+          aria-label="Cerrar"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+
+        <!-- Zoom controls -->
+        <div class="absolute top-4 left-4 flex gap-2 z-10">
+          <button 
+            data-lightbox="zoom-in"
+            class="text-white hover:text-gray-300 bg-black/30 rounded-full p-2 transition-colors"
+            aria-label="Ampliar"
+            title="Ampliar (Doble click en la imagen)"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
+            </svg>
+          </button>
+          <button 
+            data-lightbox="zoom-out"
+            class="text-white hover:text-gray-300 bg-black/30 rounded-full p-2 transition-colors"
+            aria-label="Reducir"
+            title="Reducir"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"></path>
+            </svg>
+          </button>
+          <button 
+            data-lightbox="zoom-reset"
+            class="text-white hover:text-gray-300 bg-black/30 rounded-full p-2 transition-colors"
+            aria-label="Restablecer zoom"
+            title="Restablecer zoom"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Navigation arrows -->
+        <button 
+          data-lightbox="prev"
+          class="absolute left-4 text-white hover:text-gray-300 z-10 p-2 bg-black/30 rounded-full transition-colors"
+          aria-label="Imagen anterior"
+        >
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+
+        <button 
+          data-lightbox="next"
+          class="absolute right-4 text-white hover:text-gray-300 z-10 p-2 bg-black/30 rounded-full transition-colors"
+          aria-label="Siguiente imagen"
+        >
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+
+        <!-- Image container with zoom/pan support -->
+        <div id="lightbox-container" class="w-full h-full flex items-center justify-center overflow-hidden cursor-move">
+          <img 
+            id="lightbox-image"
+            src=""
+            alt=""
+            class="max-w-full max-h-full object-contain transition-transform duration-300 cursor-zoom-in"
+            style="transform-origin: center center;"
+          />
+        </div>
+
+        <!-- Image counter and info -->
+        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-black/50 px-4 py-2 rounded-full flex items-center gap-4">
+          <span id="lightbox-counter">1 / 1</span>
+          <span class="text-sm opacity-75">• Doble click para zoom • Arrastra para mover</span>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <script define:vars={{ images: template.images, thumbnail: template.thumbnail, title: template.title }}>
+    // Gallery state
+    let currentImageIndex = 0;
+    const templateImages = images && images.length > 0 ? images : (thumbnail ? [thumbnail] : []);
+    let lightboxOpen = false;
+    
+    // Zoom and pan state
+    let currentZoom = 1;
+    let maxZoom = 4;
+    let minZoom = 1;
+    let isDragging = false;
+    let dragStart = { x: 0, y: 0 };
+    let imagePosition = { x: 0, y: 0 };
+    
+    // Wait for DOM to be ready
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeGallery();
+    });
+    
+    function initializeGallery() {
+      // Initialize main image click handlers
+      const mainImage = document.getElementById('main-image');
+      if (mainImage) {
+        mainImage.addEventListener('click', () => openLightbox(currentImageIndex));
+      }
+      
+      // Initialize thumbnail click handlers
+      document.querySelectorAll('[data-thumbnail-index]').forEach((thumb, index) => {
+        thumb.addEventListener('click', () => selectThumbnail(index));
+      });
+      
+      // Initialize navigation arrows
+      const prevButton = document.querySelector('[data-nav="prev"]');
+      const nextButton = document.querySelector('[data-nav="next"]');
+      
+      if (prevButton) {
+        prevButton.addEventListener('click', () => changeMainImage('prev'));
+      }
+      if (nextButton) {
+        nextButton.addEventListener('click', () => changeMainImage('next'));
+      }
+      
+      // Initialize lightbox controls
+      initializeLightboxControls();
+      
+      // Touch/swipe support for mobile
+      initializeSwipeSupport();
+    }
+    
+    function initializeLightboxControls() {
+      // Close button
+      const closeButton = document.querySelector('[data-lightbox="close"]');
+      if (closeButton) {
+        closeButton.addEventListener('click', closeLightbox);
+      }
+      
+      // Navigation
+      const lightboxPrev = document.querySelector('[data-lightbox="prev"]');
+      const lightboxNext = document.querySelector('[data-lightbox="next"]');
+      
+      if (lightboxPrev) {
+        lightboxPrev.addEventListener('click', () => lightboxNav('prev'));
+      }
+      if (lightboxNext) {
+        lightboxNext.addEventListener('click', () => lightboxNav('next'));
+      }
+      
+      // Zoom controls
+      const zoomIn = document.querySelector('[data-lightbox="zoom-in"]');
+      const zoomOut = document.querySelector('[data-lightbox="zoom-out"]');
+      const zoomReset = document.querySelector('[data-lightbox="zoom-reset"]');
+      
+      if (zoomIn) zoomIn.addEventListener('click', () => zoomImage(1.5));
+      if (zoomOut) zoomOut.addEventListener('click', () => zoomImage(0.75));
+      if (zoomReset) zoomReset.addEventListener('click', resetZoom);
+      
+      // Image interaction
+      const lightboxImage = document.getElementById('lightbox-image');
+      const lightboxContainer = document.getElementById('lightbox-container');
+      
+      if (lightboxImage && lightboxContainer) {
+        // Double click to zoom
+        lightboxImage.addEventListener('dblclick', (e) => {
+          e.preventDefault();
+          if (currentZoom === 1) {
+            zoomImage(2);
+          } else {
+            resetZoom();
+          }
+        });
+        
+        // Mouse wheel zoom
+        lightboxContainer.addEventListener('wheel', (e) => {
+          e.preventDefault();
+          const delta = e.deltaY > 0 ? 0.9 : 1.1;
+          zoomImage(delta);
+        });
+        
+        // Pan functionality
+        lightboxImage.addEventListener('mousedown', startDrag);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', endDrag);
+        
+        // Touch pan for mobile
+        lightboxImage.addEventListener('touchstart', startTouchDrag, { passive: false });
+        document.addEventListener('touchmove', touchDrag, { passive: false });
+        document.addEventListener('touchend', endDrag);
+      }
+      
+      // Click outside to close
+      const lightbox = document.getElementById('lightbox');
+      if (lightbox) {
+        lightbox.addEventListener('click', (e) => {
+          if (e.target.id === 'lightbox' || e.target.id === 'lightbox-container') {
+            closeLightbox();
+          }
+        });
+      }
+    }
+    
+    function initializeSwipeSupport() {
+      let touchStartX = 0;
+      let touchEndX = 0;
+      let touchStartY = 0;
+      let touchEndY = 0;
+      
+      const lightbox = document.getElementById('lightbox');
+      if (lightbox) {
+        lightbox.addEventListener('touchstart', (e) => {
+          if (e.touches.length === 1 && currentZoom === 1) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+          }
+        });
+        
+        lightbox.addEventListener('touchend', (e) => {
+          if (e.changedTouches.length === 1 && currentZoom === 1) {
+            touchEndX = e.changedTouches[0].clientX;
+            touchEndY = e.changedTouches[0].clientY;
+            handleSwipe();
+          }
+        });
+      }
+      
+      function handleSwipe() {
+        const swipeThreshold = 50;
+        const deltaX = touchStartX - touchEndX;
+        const deltaY = Math.abs(touchStartY - touchEndY);
+        
+        // Only swipe if horizontal movement is greater than vertical
+        if (Math.abs(deltaX) > swipeThreshold && deltaY < swipeThreshold) {
+          if (deltaX > 0) {
+            lightboxNav('next');
+          } else {
+            lightboxNav('prev');
+          }
+        }
+      }
+    }
+    
+    function selectThumbnail(index) {
+      currentImageIndex = index;
+      updateMainImage();
+      updateThumbnailSelection();
+    }
+    
+    function changeMainImage(direction) {
+      if (templateImages.length <= 1) return;
+      
+      if (direction === 'next') {
+        currentImageIndex = (currentImageIndex + 1) % templateImages.length;
+      } else {
+        currentImageIndex = currentImageIndex === 0 ? templateImages.length - 1 : currentImageIndex - 1;
+      }
+      
+      updateMainImage();
+      updateThumbnailSelection();
+    }
+    
+    function updateMainImage() {
+      const mainImage = document.getElementById('main-image');
+      const counter = document.getElementById('image-counter');
+      
+      if (mainImage && templateImages[currentImageIndex]) {
+        // Add smooth transition
+        mainImage.style.opacity = '0.5';
+        
+        setTimeout(() => {
+          mainImage.src = templateImages[currentImageIndex];
+          mainImage.alt = `${title} - Imagen ${currentImageIndex + 1}`;
+          mainImage.style.opacity = '1';
+        }, 150);
+      }
+      
+      if (counter) {
+        counter.textContent = currentImageIndex + 1;
+      }
+    }
+    
+    function updateThumbnailSelection() {
+      document.querySelectorAll('[data-thumbnail-index]').forEach((thumb, index) => {
+        if (index === currentImageIndex) {
+          thumb.classList.add('border-blue-500', 'scale-105');
+          thumb.classList.remove('border-transparent');
+        } else {
+          thumb.classList.remove('border-blue-500', 'scale-105');
+          thumb.classList.add('border-transparent');
+        }
+      });
+    }
+    
+    function openLightbox(index) {
+      if (templateImages.length === 0) return;
+      
+      lightboxOpen = true;
+      currentImageIndex = index;
+      resetZoom();
+      
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImage = document.getElementById('lightbox-image');
+      const lightboxCounter = document.getElementById('lightbox-counter');
+      const prevButton = document.querySelector('[data-lightbox="prev"]');
+      const nextButton = document.querySelector('[data-lightbox="next"]');
+      
+      lightboxImage.src = templateImages[currentImageIndex];
+      lightboxImage.alt = `${title} - Imagen ${currentImageIndex + 1}`;
+      lightboxCounter.textContent = `${currentImageIndex + 1} / ${templateImages.length}`;
+      
+      // Show/hide navigation buttons based on number of images
+      if (templateImages.length <= 1) {
+        if (prevButton) prevButton.style.display = 'none';
+        if (nextButton) nextButton.style.display = 'none';
+      } else {
+        if (prevButton) prevButton.style.display = 'block';
+        if (nextButton) nextButton.style.display = 'block';
+      }
+      
+      lightbox.classList.remove('hidden');
+      lightbox.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      
+      // Update thumbnail selection
+      updateThumbnailSelection();
+    }
+    
+    function closeLightbox() {
+      lightboxOpen = false;
+      const lightbox = document.getElementById('lightbox');
+      lightbox.classList.add('hidden');
+      lightbox.classList.remove('flex');
+      document.body.style.overflow = 'auto';
+      resetZoom();
+    }
+    
+    function lightboxNav(direction) {
+      if (templateImages.length <= 1) return;
+      
+      if (direction === 'next') {
+        currentImageIndex = (currentImageIndex + 1) % templateImages.length;
+      } else {
+        currentImageIndex = currentImageIndex === 0 ? templateImages.length - 1 : currentImageIndex - 1;
+      }
+      
+      const lightboxImage = document.getElementById('lightbox-image');
+      const lightboxCounter = document.getElementById('lightbox-counter');
+      
+      // Reset zoom when changing images
+      resetZoom();
+      
+      // Smooth transition for lightbox
+      lightboxImage.style.opacity = '0.5';
+      
+      setTimeout(() => {
+        lightboxImage.src = templateImages[currentImageIndex];
+        lightboxImage.alt = `${title} - Imagen ${currentImageIndex + 1}`;
+        lightboxCounter.textContent = `${currentImageIndex + 1} / ${templateImages.length}`;
+        lightboxImage.style.opacity = '1';
+      }, 150);
+      
+      updateThumbnailSelection();
+    }
+    
+    // Zoom and Pan Functions
+    function zoomImage(factor) {
+      const newZoom = currentZoom * factor;
+      
+      if (newZoom >= minZoom && newZoom <= maxZoom) {
+        currentZoom = newZoom;
+        updateImageTransform();
+        updateCursor();
+      }
+    }
+    
+    function resetZoom() {
+      currentZoom = 1;
+      imagePosition = { x: 0, y: 0 };
+      updateImageTransform();
+      updateCursor();
+    }
+    
+    function updateImageTransform() {
+      const lightboxImage = document.getElementById('lightbox-image');
+      if (lightboxImage) {
+        lightboxImage.style.transform = `scale(${currentZoom}) translate(${imagePosition.x}px, ${imagePosition.y}px)`;
+      }
+    }
+    
+    function updateCursor() {
+      const lightboxImage = document.getElementById('lightbox-image');
+      if (lightboxImage) {
+        if (currentZoom > 1) {
+          lightboxImage.style.cursor = isDragging ? 'grabbing' : 'grab';
+        } else {
+          lightboxImage.style.cursor = 'zoom-in';
+        }
+      }
+    }
+    
+    function startDrag(e) {
+      if (currentZoom > 1) {
+        isDragging = true;
+        dragStart = { x: e.clientX - imagePosition.x, y: e.clientY - imagePosition.y };
+        updateCursor();
+        e.preventDefault();
+      }
+    }
+    
+    function startTouchDrag(e) {
+      if (currentZoom > 1 && e.touches.length === 1) {
+        isDragging = true;
+        dragStart = { 
+          x: e.touches[0].clientX - imagePosition.x, 
+          y: e.touches[0].clientY - imagePosition.y 
+        };
+        e.preventDefault();
+      }
+    }
+    
+    function drag(e) {
+      if (isDragging && currentZoom > 1) {
+        imagePosition = {
+          x: e.clientX - dragStart.x,
+          y: e.clientY - dragStart.y
+        };
+        updateImageTransform();
+        e.preventDefault();
+      }
+    }
+    
+    function touchDrag(e) {
+      if (isDragging && currentZoom > 1 && e.touches.length === 1) {
+        imagePosition = {
+          x: e.touches[0].clientX - dragStart.x,
+          y: e.touches[0].clientY - dragStart.y
+        };
+        updateImageTransform();
+        e.preventDefault();
+      }
+    }
+    
+    function endDrag() {
+      if (isDragging) {
+        isDragging = false;
+        updateCursor();
+      }
+    }
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (lightboxOpen) {
+        if (e.key === 'Escape') {
+          closeLightbox();
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          lightboxNav('prev');
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          lightboxNav('next');
+        } else if (e.key === '+' || e.key === '=') {
+          e.preventDefault();
+          zoomImage(1.25);
+        } else if (e.key === '-') {
+          e.preventDefault();
+          zoomImage(0.8);
+        } else if (e.key === '0') {
+          e.preventDefault();
+          resetZoom();
+        }
+      }
+    });
+  </script>
 </Layout>

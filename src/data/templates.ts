@@ -5,6 +5,7 @@ export interface Template {
   description: string;
   technologies: string[];
   thumbnail: string;
+  images?: string[];
   liveUrl?: string;
   githubUrl?: string;
   features: string[];
@@ -239,6 +240,15 @@ export const realTemplates: Template[] = [
       liveUrl: 'https://qr-table.vercel.app/',
       thumbnail: 'https://res.cloudinary.com/djluqrprg/image/upload/v1756442475/qr_kttlrz.png',
       githubUrl: 'https://github.com/hnkatze/qr-table',
+      images: [
+        "https://res.cloudinary.com/djluqrprg/image/upload/v1757995085/2_pb2jrc.png",
+        "https://res.cloudinary.com/djluqrprg/image/upload/v1757995087/33_wlndic.png",
+        "https://res.cloudinary.com/djluqrprg/image/upload/v1757995086/8_ywypkt.png",
+        "https://res.cloudinary.com/djluqrprg/image/upload/v1757995086/7_z90zyj.png",
+        "https://res.cloudinary.com/djluqrprg/image/upload/v1757995085/4_neuuvm.png",
+        "https://res.cloudinary.com/djluqrprg/image/upload/v1757995085/5_tqoh0l.png",
+        "https://res.cloudinary.com/djluqrprg/image/upload/v1757995085/1_pbviqm.png"
+      ],
       features: [
         'Menú digital QR interactivo y actualizado al instante',
         'Panel administrativo para gestión de productos y órdenes',
