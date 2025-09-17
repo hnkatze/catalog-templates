@@ -37,15 +37,22 @@ const { template } = Astro.props;
           <!-- Left Column - Images -->
           <div class="space-y-6">
             <!-- Main Image Display -->
-            <div class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl overflow-hidden shadow-xl relative">
+            <div class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl overflow-hidden shadow-xl relative group">
               {template.images && template.images.length > 0 ? (
                 <div class="relative w-full h-full">
-                  <img 
+                  <img
                     id="main-image"
-                    src={template.images[0]} 
+                    src={template.images[0]}
                     alt={`${template.title} - Imagen principal`}
-                    class="w-full h-full object-cover cursor-pointer transition-opacity duration-300"
+                    class="w-full h-full object-contain cursor-pointer transition-all duration-300 hover:opacity-95"
                   />
+                  <!-- Click indicator -->
+                  <div class="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1.5 rounded-full text-sm flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
+                    </svg>
+                    <span>Click para ampliar</span>
+                  </div>
                   {template.images.length > 1 && (
                     <div class="absolute inset-0 flex items-center justify-between p-4 opacity-0 hover:opacity-100 transition-opacity duration-300">
                       <button 
@@ -73,12 +80,21 @@ const { template } = Astro.props;
                   </div>
                 </div>
               ) : template.thumbnail ? (
-                <img 
-                  id="main-image"
-                  src={template.thumbnail} 
-                  alt={template.title}
-                  class="w-full h-full object-cover cursor-pointer transition-opacity duration-300"
-                />
+                <div class="relative w-full h-full">
+                  <img
+                    id="main-image"
+                    src={template.thumbnail}
+                    alt={template.title}
+                    class="w-full h-full object-contain cursor-pointer transition-all duration-300 hover:opacity-95"
+                  />
+                  <!-- Click indicator -->
+                  <div class="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1.5 rounded-full text-sm flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
+                    </svg>
+                    <span>Click para ampliar</span>
+                  </div>
+                </div>
               ) : (
                 <div class="w-full h-full flex items-center justify-center">
                   <span class="text-gray-400 text-lg">Vista previa no disponible</span>
@@ -94,10 +110,10 @@ const { template } = Astro.props;
                     class={`aspect-square bg-gray-100 rounded-lg overflow-hidden cursor-pointer border-2 transition-all duration-200 ${index === 0 ? 'border-blue-500 scale-105' : 'border-transparent hover:border-gray-300 hover:scale-105'}`}
                     data-thumbnail-index={index}
                   >
-                    <img 
-                      src={image} 
+                    <img
+                      src={image}
                       alt={`${template.title} - Imagen ${index + 1}`}
-                      class="w-full h-full object-cover"
+                      class="w-full h-full object-contain bg-gray-50"
                     />
                   </div>
                 ))}
@@ -194,12 +210,12 @@ const { template } = Astro.props;
     </section>
 
     <!-- Lightbox Modal -->
-    <div id="lightbox" class="fixed inset-0 bg-black/90 z-50 hidden items-center justify-center p-4">
-      <div class="relative max-w-7xl w-full h-full flex items-center justify-center">
+    <div id="lightbox" class="fixed inset-0 bg-black z-50 hidden items-center justify-center">
+      <div class="relative w-full h-full flex items-center justify-center">
         <!-- Close button -->
-        <button 
+        <button
           data-lightbox="close"
-          class="absolute top-4 right-4 text-white hover:text-gray-300 z-10 bg-black/30 rounded-full p-2 transition-colors"
+          class="absolute top-4 right-4 text-white hover:text-gray-300 z-10 bg-black/50 rounded-full p-3 transition-colors"
           aria-label="Cerrar"
         >
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -207,11 +223,11 @@ const { template } = Astro.props;
           </svg>
         </button>
 
-        <!-- Zoom controls -->
-        <div class="absolute top-4 left-4 flex gap-2 z-10">
-          <button 
+        <!-- Zoom controls - Hidden on mobile -->
+        <div class="absolute top-4 left-4 hidden sm:flex gap-2 z-10">
+          <button
             data-lightbox="zoom-in"
-            class="text-white hover:text-gray-300 bg-black/30 rounded-full p-2 transition-colors"
+            class="text-white hover:text-gray-300 bg-black/50 rounded-full p-2 transition-colors"
             aria-label="Ampliar"
             title="Ampliar (Doble click en la imagen)"
           >
@@ -219,9 +235,9 @@ const { template } = Astro.props;
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
             </svg>
           </button>
-          <button 
+          <button
             data-lightbox="zoom-out"
-            class="text-white hover:text-gray-300 bg-black/30 rounded-full p-2 transition-colors"
+            class="text-white hover:text-gray-300 bg-black/50 rounded-full p-2 transition-colors"
             aria-label="Reducir"
             title="Reducir"
           >
@@ -229,9 +245,9 @@ const { template } = Astro.props;
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"></path>
             </svg>
           </button>
-          <button 
+          <button
             data-lightbox="zoom-reset"
-            class="text-white hover:text-gray-300 bg-black/30 rounded-full p-2 transition-colors"
+            class="text-white hover:text-gray-300 bg-black/50 rounded-full p-2 transition-colors"
             aria-label="Restablecer zoom"
             title="Restablecer zoom"
           >
@@ -242,9 +258,9 @@ const { template } = Astro.props;
         </div>
 
         <!-- Navigation arrows -->
-        <button 
+        <button
           data-lightbox="prev"
-          class="absolute left-4 text-white hover:text-gray-300 z-10 p-2 bg-black/30 rounded-full transition-colors"
+          class="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 z-10 p-2 sm:p-3 bg-black/50 rounded-full transition-colors"
           aria-label="Imagen anterior"
         >
           <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -252,9 +268,9 @@ const { template } = Astro.props;
           </svg>
         </button>
 
-        <button 
+        <button
           data-lightbox="next"
-          class="absolute right-4 text-white hover:text-gray-300 z-10 p-2 bg-black/30 rounded-full transition-colors"
+          class="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 z-10 p-2 sm:p-3 bg-black/50 rounded-full transition-colors"
           aria-label="Siguiente imagen"
         >
           <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -263,20 +279,19 @@ const { template } = Astro.props;
         </button>
 
         <!-- Image container with zoom/pan support -->
-        <div id="lightbox-container" class="w-full h-full flex items-center justify-center overflow-hidden cursor-move">
-          <img 
+        <div id="lightbox-container" class="w-full h-full flex items-center justify-center overflow-hidden p-4 sm:p-8">
+          <img
             id="lightbox-image"
             src=""
             alt=""
-            class="max-w-full max-h-full object-contain transition-transform duration-300 cursor-zoom-in"
+            class="w-full h-full object-contain transition-transform duration-300 select-none"
             style="transform-origin: center center;"
           />
         </div>
 
         <!-- Image counter and info -->
-        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-black/50 px-4 py-2 rounded-full flex items-center gap-4">
-          <span id="lightbox-counter">1 / 1</span>
-          <span class="text-sm opacity-75">• Doble click para zoom • Arrastra para mover</span>
+        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-black/50 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full">
+          <span id="lightbox-counter" class="text-sm sm:text-base">1 / 1</span>
         </div>
       </div>
     </div>
@@ -287,14 +302,16 @@ const { template } = Astro.props;
     let currentImageIndex = 0;
     const templateImages = images && images.length > 0 ? images : (thumbnail ? [thumbnail] : []);
     let lightboxOpen = false;
-    
-    // Zoom and pan state
+
+    // Zoom and pan state - Simplified for mobile
     let currentZoom = 1;
-    let maxZoom = 4;
+    let maxZoom = 3; // Reduced for better mobile experience
     let minZoom = 1;
     let isDragging = false;
     let dragStart = { x: 0, y: 0 };
     let imagePosition = { x: 0, y: 0 };
+    let pinchScale = 1;
+    let lastDistance = 0;
     
     // Wait for DOM to be ready
     document.addEventListener('DOMContentLoaded', function() {
@@ -305,7 +322,12 @@ const { template } = Astro.props;
       // Initialize main image click handlers
       const mainImage = document.getElementById('main-image');
       if (mainImage) {
-        mainImage.addEventListener('click', () => openLightbox(currentImageIndex));
+        mainImage.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('Image clicked, opening lightbox...');
+          openLightbox(currentImageIndex);
+        });
       }
       
       // Initialize thumbnail click handlers
@@ -316,12 +338,18 @@ const { template } = Astro.props;
       // Initialize navigation arrows
       const prevButton = document.querySelector('[data-nav="prev"]');
       const nextButton = document.querySelector('[data-nav="next"]');
-      
+
       if (prevButton) {
-        prevButton.addEventListener('click', () => changeMainImage('prev'));
+        prevButton.addEventListener('click', (e) => {
+          e.stopPropagation();
+          changeMainImage('prev');
+        });
       }
       if (nextButton) {
-        nextButton.addEventListener('click', () => changeMainImage('next'));
+        nextButton.addEventListener('click', (e) => {
+          e.stopPropagation();
+          changeMainImage('next');
+        });
       }
       
       // Initialize lightbox controls
@@ -361,9 +389,9 @@ const { template } = Astro.props;
       // Image interaction
       const lightboxImage = document.getElementById('lightbox-image');
       const lightboxContainer = document.getElementById('lightbox-container');
-      
+
       if (lightboxImage && lightboxContainer) {
-        // Double click to zoom
+        // Double click to zoom (desktop)
         lightboxImage.addEventListener('dblclick', (e) => {
           e.preventDefault();
           if (currentZoom === 1) {
@@ -372,23 +400,25 @@ const { template } = Astro.props;
             resetZoom();
           }
         });
-        
-        // Mouse wheel zoom
+
+        // Mouse wheel zoom (desktop)
         lightboxContainer.addEventListener('wheel', (e) => {
-          e.preventDefault();
-          const delta = e.deltaY > 0 ? 0.9 : 1.1;
-          zoomImage(delta);
-        });
-        
-        // Pan functionality
+          if (window.innerWidth > 768) {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? 0.9 : 1.1;
+            zoomImage(delta);
+          }
+        }, { passive: false });
+
+        // Pan functionality (desktop)
         lightboxImage.addEventListener('mousedown', startDrag);
         document.addEventListener('mousemove', drag);
         document.addEventListener('mouseup', endDrag);
-        
-        // Touch pan for mobile
-        lightboxImage.addEventListener('touchstart', startTouchDrag, { passive: false });
-        document.addEventListener('touchmove', touchDrag, { passive: false });
-        document.addEventListener('touchend', endDrag);
+
+        // Touch events for mobile
+        lightboxImage.addEventListener('touchstart', handleTouchStart, { passive: false });
+        lightboxImage.addEventListener('touchmove', handleTouchMove, { passive: false });
+        lightboxImage.addEventListener('touchend', handleTouchEnd, { passive: false });
       }
       
       // Click outside to close
@@ -494,22 +524,36 @@ const { template } = Astro.props;
     }
     
     function openLightbox(index) {
-      if (templateImages.length === 0) return;
-      
+      console.log('Opening lightbox with index:', index);
+      console.log('Template images:', templateImages);
+
+      if (templateImages.length === 0) {
+        console.log('No images to show');
+        return;
+      }
+
       lightboxOpen = true;
       currentImageIndex = index;
       resetZoom();
-      
+
       const lightbox = document.getElementById('lightbox');
       const lightboxImage = document.getElementById('lightbox-image');
       const lightboxCounter = document.getElementById('lightbox-counter');
       const prevButton = document.querySelector('[data-lightbox="prev"]');
       const nextButton = document.querySelector('[data-lightbox="next"]');
-      
+
+      if (!lightbox || !lightboxImage) {
+        console.error('Lightbox elements not found');
+        return;
+      }
+
       lightboxImage.src = templateImages[currentImageIndex];
       lightboxImage.alt = `${title} - Imagen ${currentImageIndex + 1}`;
-      lightboxCounter.textContent = `${currentImageIndex + 1} / ${templateImages.length}`;
-      
+
+      if (lightboxCounter) {
+        lightboxCounter.textContent = `${currentImageIndex + 1} / ${templateImages.length}`;
+      }
+
       // Show/hide navigation buttons based on number of images
       if (templateImages.length <= 1) {
         if (prevButton) prevButton.style.display = 'none';
@@ -518,11 +562,13 @@ const { template } = Astro.props;
         if (prevButton) prevButton.style.display = 'block';
         if (nextButton) nextButton.style.display = 'block';
       }
-      
+
       lightbox.classList.remove('hidden');
       lightbox.classList.add('flex');
       document.body.style.overflow = 'hidden';
-      
+
+      console.log('Lightbox opened successfully');
+
       // Update thumbnail selection
       updateThumbnailSelection();
     }
@@ -591,7 +637,7 @@ const { template } = Astro.props;
     
     function updateCursor() {
       const lightboxImage = document.getElementById('lightbox-image');
-      if (lightboxImage) {
+      if (lightboxImage && window.innerWidth > 768) {
         if (currentZoom > 1) {
           lightboxImage.style.cursor = isDragging ? 'grabbing' : 'grab';
         } else {
@@ -599,27 +645,16 @@ const { template } = Astro.props;
         }
       }
     }
-    
+
     function startDrag(e) {
-      if (currentZoom > 1) {
+      if (currentZoom > 1 && window.innerWidth > 768) {
         isDragging = true;
         dragStart = { x: e.clientX - imagePosition.x, y: e.clientY - imagePosition.y };
         updateCursor();
         e.preventDefault();
       }
     }
-    
-    function startTouchDrag(e) {
-      if (currentZoom > 1 && e.touches.length === 1) {
-        isDragging = true;
-        dragStart = { 
-          x: e.touches[0].clientX - imagePosition.x, 
-          y: e.touches[0].clientY - imagePosition.y 
-        };
-        e.preventDefault();
-      }
-    }
-    
+
     function drag(e) {
       if (isDragging && currentZoom > 1) {
         imagePosition = {
@@ -630,23 +665,60 @@ const { template } = Astro.props;
         e.preventDefault();
       }
     }
-    
-    function touchDrag(e) {
-      if (isDragging && currentZoom > 1 && e.touches.length === 1) {
-        imagePosition = {
-          x: e.touches[0].clientX - dragStart.x,
-          y: e.touches[0].clientY - dragStart.y
-        };
-        updateImageTransform();
-        e.preventDefault();
-      }
-    }
-    
+
     function endDrag() {
       if (isDragging) {
         isDragging = false;
         updateCursor();
       }
+    }
+
+    // Mobile touch handlers for pinch zoom
+    function handleTouchStart(e) {
+      if (e.touches.length === 2) {
+        // Pinch zoom start
+        lastDistance = getDistance(e.touches[0], e.touches[1]);
+        pinchScale = currentZoom;
+      } else if (e.touches.length === 1 && currentZoom > 1) {
+        // Single touch drag
+        isDragging = true;
+        dragStart = {
+          x: e.touches[0].clientX - imagePosition.x,
+          y: e.touches[0].clientY - imagePosition.y
+        };
+      }
+    }
+
+    function handleTouchMove(e) {
+      if (e.touches.length === 2) {
+        // Pinch zoom
+        e.preventDefault();
+        const distance = getDistance(e.touches[0], e.touches[1]);
+        const scale = distance / lastDistance;
+        currentZoom = Math.min(Math.max(pinchScale * scale, minZoom), maxZoom);
+        updateImageTransform();
+      } else if (isDragging && e.touches.length === 1 && currentZoom > 1) {
+        // Single touch drag
+        e.preventDefault();
+        imagePosition = {
+          x: e.touches[0].clientX - dragStart.x,
+          y: e.touches[0].clientY - dragStart.y
+        };
+        updateImageTransform();
+      }
+    }
+
+    function handleTouchEnd(e) {
+      if (e.touches.length === 0) {
+        isDragging = false;
+        pinchScale = currentZoom;
+      }
+    }
+
+    function getDistance(touch1, touch2) {
+      const dx = touch1.clientX - touch2.clientX;
+      const dy = touch1.clientY - touch2.clientY;
+      return Math.sqrt(dx * dx + dy * dy);
     }
     
     // Keyboard navigation
